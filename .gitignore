@@ -59,3 +59,7 @@ target/
 
 #PyCharm
 .idea/
+venv/
+
+### PROJECT SPECIFIC ###
+message.json
