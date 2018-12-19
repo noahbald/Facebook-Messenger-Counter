@@ -20,7 +20,13 @@ message_types = {}
 people_data = {}
 
 
-def main(mode="latest"):
+def main(mode: str = "latest"):
+    """
+    Runs through the system's main procedures
+    :param mode: the I/O mode for the application
+    :return: None
+    """
+    # get gloval data
     global data
     global message_types
     global people_data
@@ -51,12 +57,17 @@ def main(mode="latest"):
 
     # Run application in the I/O mode selected
     if mode == "legacy":
+        # Run the application through the terminal
         menu()
         return
 
 
 def message_distribution():
-    # Distribute message types
+    """
+    Distributes messages into categories
+    :return: A dictionary of the categories and their related messages
+    """
+    # Initialise variables
     global data
     media_type = None
     messages = []
@@ -68,52 +79,68 @@ def message_distribution():
     calls = []
     plans = []
     shares = []
+
+    # Go though each message and place it into it's respective categories
     for message in data['messages']:
         if 'reactions' in message:
-            # determine whether the message has reactions
+            # If the message has reactions, categorise it as so
             reactions.append(message)
         for media_type in MEDIA:
-            # determine whether the message is a type of media
+            # If the message is a type of media, categorise it as so
             if media_type in message:
                 media.append(message)
                 break
         if media_type is not None and media_type in message:
-            # continue if media type was detected
+            # If the message was found to be media, move to the next message
             continue
         if 'content' in message:
             content = message['content']
             # Vulnerable to categorising actual messages
             if " set the nickname for " in content or " set your nickname to " in content:
-                # determine whether the message was a nickname update
+                # If the message was a nickname change, categorise it as so
                 nickname.append(message)
                 continue
             elif " changed the group photo." in content or " removed the group photo." in content \
                     or " removed the group name." in content or " named the group " in content:
-                # determine whether the message was a group info update
+                # If the message was a group info change, categorise it as so
                 group_info.append(message)
                 continue
         if 'sticker' in message:
-            # determine whether the message was a sticker
+            # If the message was a sticker, categorise it as so
             stickers.append(message)
             continue
         elif message['type'] == "Generic" and 'content' in message:
-            # determine whether the message was an actual message
+            # If the message was a text message, categorise it as so
             messages.append(message)
         elif message['type'] == "Call":
+            # If the message was a call, categorise it as so
             calls.append(message)
         elif message['type'] == "Plan":
+            # If the message was a plan, categorise it as so
             plans.append(message)
         elif message['type'] == "Share":
+            # If the message was a shared link, categorise it as so
             shares.append(message)
 
+    # Create a dictionary and return it
     return {'messages': messages, 'media': media, 'stickers': stickers, 'nickname': nickname,
             'group_info': group_info, 'reactions': reactions, 'calls': calls, 'plans': plans, 'shares': shares}
 
 
 def menu():
+    """
+    A command-line interface to interact with the features of the application
+    :return: None
+    """
     global message_types
 
-    def get_selection(low, high):
+    def get_selection(low: int, high: int):
+        """
+        Ask the user for a number within a range
+        :param low: The lower boundary of the selection
+        :param high: The upper boundary of the selection
+        :return: The user's selected number
+        """
         while True:
             try:
                 # Ask the user for a number within the range
@@ -130,13 +157,14 @@ def menu():
 
     print("legacy menu")
 
-    # menu strings
+    # menu string
     main_menu = "\nMenu:\n\t1. Counters\n\t2. Averages\n\t3. People\n\t4. quit"
 
     while True:
+        # Display the main menu and ask the user's selection
         print(main_menu)
         selection = get_selection(1, 4)
-        if selection == 1: # Counters
+        if selection == 1:  # Counters
             counter_menu = "\nCounter Menu:\n\t1. Messages\n\t2. Media\n\t3. Stickers\n\t4. Others" \
                            "\n\t5. Unique Words\n\t6. Reacts\n\t7. Time Counts\n\t8. Back"
             print(counter_menu)
@@ -159,14 +187,17 @@ def menu():
                     # Query user for specific words
                     word = input("Input a word: ")
                     if word == "":
+                        # The user did not enter a word; return to menu
                         break
                     if word in words:
+                        # If the word is in the conversation, tell the user the number of occurrences
                         print(word, "occurred", words[word], "times")
                     else:
+                        # If the word isn't found, tell the user there was zero occurrences
                         print(word, "occurred 0 times")
             elif selection == 6:  # Reacts
                 counters.react_data(message_types['reactions'], output=True)
-            elif selection == 7: # Time Counts
+            elif selection == 7:  # Time Counts
                 counters.time_data(data['messages'], output=True)
             elif selection == 8:  # Back
                 continue
@@ -175,13 +206,13 @@ def menu():
                     "\n\t3. Message length\n\t4. Reaction Proportions\n\t5. Back"
             print(averages_menu)
             selection = get_selection(1, 5)
-            if selection == 1: # Time Average
+            if selection == 1:  # Time Average
                 averages.time_average(data['messages'], output=True, precision=2)
             elif selection == 2:  # Call length
                 averages.call_time_average(message_types['calls'], output=True)
             elif selection == 3:  # Message length (words)
                 averages.message_length_average(message_types['messages'], output=True)
-            elif selection == 4:
+            elif selection == 4:  # Reaction Proportions
                 averages.reaction_average(message_types['reactions'], output=True, precision=2)
             elif selection == 5:  # Back
                 continue

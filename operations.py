@@ -1,7 +1,14 @@
 import re
 import datetime
 
-def word_extract(contents):
+
+def word_extract(contents: str):
+    """
+    Seperate words in a string into a list, removing any characters which are uneecessary
+    (eg. they're would be considered the same as theyre)
+    :param contents: The contents of a message
+    :return: A list of the words in contents
+    """
     content = contents.lower()
     # Remove special characters
     for i in range(len(content)):
@@ -20,11 +27,23 @@ def word_extract(contents):
 
     return content
 
-def timestamp_to_datetime(timestamp):
+
+def timestamp_to_datetime(timestamp: int):
+    """
+    Convert a timestamp to datetime
+    :param timestamp: The timestamp given by Facebook
+    :return: The datetime the timestamp corresponds to
+    """
     date_time = datetime.datetime.fromtimestamp(timestamp)
     return date_time
 
-def seperate_users(data):
+
+def separate_users(data: dict):
+    """
+    Seperate the messages in the conversation to a dictionary of the people who sent them
+    :param data: The messages sent in the conversation
+    :return: A dictoinary of the users and the messages they sent
+    """
     users = {}
     for user in data['participants']:
         users[user['name']] = []

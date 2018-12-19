@@ -2,9 +2,15 @@ import json
 import os
 
 
-def load_file(path):
+def load_file(path: str):
+    """
+    Load the message file given by Facebook and convert it to an object
+    :param path: The system path to the message file
+    :return: The data stored in the file
+    """
     file = open(path)
     data = json.load(file)
+    file.close()
     return data
 
 
