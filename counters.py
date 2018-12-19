@@ -56,7 +56,7 @@ def media_data(media, output=False):
         print("Files:", files_count)
         print("Audio:", audio_count)
 
-    return {'media_count': len(media), 'photo_count': photo_count, 'video_count': video_count, 'gif_count': gifs_count,
+    return {'media_count': total_count, 'photo_count': photo_count, 'video_count': video_count, 'gif_count': gifs_count,
             'file_count': files_count, 'audio_count': audio_count}
 
 
@@ -143,8 +143,9 @@ def time_data(messages, output=False):
             date_time = operations.timestamp_to_datetime(message['timestamp'])
         elif 'timestamp_ms' in message:
             date_time = operations.timestamp_to_datetime(message['timestamp_ms']/1000)
-        else:
+        elif date_time is None:
             print("Missing Timestamp\n", message)
+            continue
         hour = int(date_time.strftime("%H"))
         day = date_time.weekday()
         month = int(date_time.strftime("%m"))-1
