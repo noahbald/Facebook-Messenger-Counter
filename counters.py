@@ -24,6 +24,7 @@ def messages_data(messages, output=False):
 def media_data(media, output=False):
     media_types = ["photos", "videos", "gifs", "files", "audio_files"]
 
+    total_count = 0
     photo_count = 0
     video_count = 0
     audio_count = 0
@@ -33,17 +34,22 @@ def media_data(media, output=False):
     for item in media:
         if media_types[0] in item:
             photo_count += len(item[media_types[0]])
+            total_count += 1
         elif media_types[1] in item:
             video_count += len(item[media_types[1]])
+            total_count += 1
         elif media_types[2] in item:
             gifs_count += len(item[media_types[2]])
+            total_count += 1
         elif media_types[3] in item:
             files_count += len(item[media_types[3]])
+            total_count += 1
         elif media_types[4] in item:
             audio_count += len(item[media_types[4]])
+            total_count += 1
 
     if output:
-        print("Total Media", len(media))
+        print("Total Media", total_count)
         print("Photos:", photo_count)
         print("Videos:", video_count)
         print("Gifs:", gifs_count)
@@ -104,3 +110,58 @@ def react_data(reactions, output=False):
     return {'react_count': react_count, 'love_count': love_count, 'laugh_count': laugh_count, 'wow_count': wow_count,
             'sad_count': sad_count, 'angry_count': angry_count, 'like_count': like_count,
             'dislike_count': dis_i_like_count}
+
+def call_data(messages, output=False):
+    total_duration = 0
+    total_calls = len(messages)
+    missed_count = 0
+    answered_count = 0
+    for message in messages:
+        if 'missed' in message:
+            missed_count += 1
+            continue
+        answered_count += 1
+        total_duration += message['call_duration']
+
+    if output:
+        print("Total Calls:", total_calls)
+        print("Total Duration:", total_duration)
+        print("Total Missed", missed_count)
+        print("Total Answered", answered_count)
+
+    return {'call_count': total_calls, 'duration_total': total_duration, 'missed_count': missed_count,
+            'answered_count': answered_count}
+
+def time_data(messages, output=False):
+    count_hour = [0] * 24  # 0:00 - 23:00
+    count_day = [0] * 7  # mon - tue
+    count_month = [0] * 12  # jan-dec
+    count_year = {}
+
+    for message in messages:
+        if 'timestamp' in message:
+            date_time = operations.timestamp_to_datetime(message['timestamp'])
+        elif 'timestamp_ms' in message:
+            date_time = operations.timestamp_to_datetime(message['timestamp_ms']/1000)
+        else:
+            print("Missing Timestamp\n", message)
+        hour = int(date_time.strftime("%H"))
+        day = date_time.weekday()
+        month = int(date_time.strftime("%m"))-1
+        year = int(date_time.strftime("%Y"))
+
+        count_hour[hour] += 1
+        count_day[day] += 1
+        count_month[month] += 1
+        if year not in count_year:
+            count_year[year] = 1
+        else:
+            count_year[year] += 1
+
+    if output:
+        print("Hour counts:", count_hour)
+        print("Day counts:", count_day)
+        print("Month counts:", count_month)
+        print("Year counts:", count_year)
+
+    return {'hour': count_hour, 'day': count_day, 'month': count_month, 'year': count_year}
