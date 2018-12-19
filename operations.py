@@ -1,5 +1,5 @@
 import re
-
+import datetime
 
 def word_extract(contents):
     content = contents.lower()
@@ -19,3 +19,18 @@ def word_extract(contents):
     content = content.split(" ")
 
     return content
+
+def timestamp_to_datetime(timestamp):
+    date_time = datetime.datetime.fromtimestamp(timestamp)
+    return date_time
+
+def seperate_users(data):
+    users = {}
+    for user in data['participants']:
+        users[user['name']] = []
+    for message in data['messages']:
+        if message['sender_name'] not in users:
+            users[message['sender_name']] = [message]
+        else:
+            users[message['sender_name']].append(message)
+    return users
