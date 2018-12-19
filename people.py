@@ -121,6 +121,7 @@ def people_message_type_count(people: dict, messages_type: list, output: bool = 
     Return a dict of the amount of messages sent of the particular message_type
     :param people: The dictionary of the people in the conversation and their messages
     :param messages_type: A list of the messages, which may be a particular type
+    :param output: Whether to print the calculations to the terminal
     :return: The amount of messeges of that type by each person
     """
     # Create a dictionary to store each persons count

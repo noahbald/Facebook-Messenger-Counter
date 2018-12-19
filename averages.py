@@ -56,7 +56,7 @@ def call_time_average(messages: dict, output: bool = False):
     return average_time
 
 
-def message_length_average(messages: dict, output: bool = False):
+def message_length_average(messages: list, output: bool = False):
     """
     Calculate the average amount of words in messages
     :param messages: The messages in the conversation

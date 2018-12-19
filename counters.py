@@ -182,7 +182,7 @@ def time_data(messages: dict, output: bool = False):
     count_hour = [0] * 24  # 0:00 - 23:00
     count_day = [0] * 7  # mon - tue
     count_month = [0] * 12  # jan-dec
-    count_year = {} # past-present
+    count_year = {}  # past-present
 
     for message in messages:
         date_time = None
