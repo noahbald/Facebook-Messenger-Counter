@@ -2,6 +2,7 @@ import unwrapper
 import counters
 import averages
 import operations
+import people
 
 import os
 
@@ -16,14 +17,14 @@ REACTS = {"\u00f0\u009f\u0098\u008d": "love", "\u00f0\u009f\u0098\u0086": "laugh
 # Global Variables
 data = {}
 message_types = {}
-word_data = {}
-people = {}
+people_data = {}
 
 
 def main(mode="latest"):
     global data
     global message_types
-    global people
+    global people_data
+
     # Import data from message.json
     try:
         data = unwrapper.load_file(str(os.getcwd()) + "\\" + DEFAULT_FILENAME)
@@ -46,8 +47,9 @@ def main(mode="latest"):
     message_types = message_distribution()
 
     # Separate User Data
-    people = operations.seperate_users(data)
+    people_data = operations.separate_users(data)
 
+    # Run application in the I/O mode selected
     if mode == "legacy":
         menu()
         return
@@ -114,14 +116,18 @@ def menu():
     def get_selection(low, high):
         while True:
             try:
-                selection = int(input("Select a number between [{0} and {1}]: ".format(low, high)))
-                if not (low <= selection <= high):
+                # Ask the user for a number within the range
+                user_selection = int(input("Select a number between [{0} and {1}]: ".format(low, high)))
+                if not (low <= user_selection <= high):
+                    # If the selection was invalid, try again
                     print("Enter value within range...")
                     continue
-                break
+                else:
+                    break
             except ValueError as e:
                 print("Error", e, "try again")
-        return selection
+        return user_selection
+
     print("legacy menu")
 
     # menu strings
@@ -162,8 +168,8 @@ def menu():
                 counters.react_data(message_types['reactions'], output=True)
             elif selection == 7: # Time Counts
                 counters.time_data(data['messages'], output=True)
-            elif selection == 8: # Back
-                break
+            elif selection == 8:  # Back
+                continue
         elif selection == 2:  # Averages
             averages_menu = "\nAverages:\n\t1. Time Average\n\t2. Call length" \
                     "\n\t3. Message length\n\t4. Reaction Proportions\n\t5. Back"
@@ -177,11 +183,31 @@ def menu():
                 averages.message_length_average(message_types['messages'], output=True)
             elif selection == 4:
                 averages.reaction_average(message_types['reactions'], output=True, precision=2)
-            elif selection == 5:
-                break
-        elif selection == 3: # People
+            elif selection == 5:  # Back
+                continue
+        elif selection == 3:  # People
             people_menu = "\nPeople:\n\t1. People List\n\t2. People Total Messages\n\t3. People Words\n\t" \
                           "4. People Reactions\n\t5. People Calls\n\t6. People Stickers\n\t7. People Media\n\t8. Quit"
+            print(people_menu)
+            selection = get_selection(1, 8)
+            if selection == 1:  # People List
+                print(people.names(people_data))
+            elif selection == 2:  # People Total Messages
+                print(people.people_message_count(people_data))
+            elif selection == 3:  # People Words
+                print("Word Count:", people.people_word_count(people_data))
+                print("Average Word Count:", people.people_word_average(people_data))
+            elif selection == 4:  # People Reactions
+                people.people_react_count(people_data, message_types['reactions'], True)
+            elif selection == 5:  # People Calls
+                people.people_call_count(people_data, output=True)
+            elif selection == 6:  # People Stickers
+                print(people.people_message_type_count(people_data, message_types['stickers']))
+            elif selection == 7:  # People Media
+                print(people.people_media_count(people_data))
+            elif selection == 8:  # back
+                continue
+
         elif selection == 4:  # Quit
             break
 
