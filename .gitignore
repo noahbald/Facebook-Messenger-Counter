@@ -62,4 +62,4 @@ target/
 venv/
 
 ### PROJECT SPECIFIC ###
-message.json
+*.json
