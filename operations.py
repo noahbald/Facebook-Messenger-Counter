@@ -9,6 +9,9 @@ def word_extract(contents: str):
     :param contents: The contents of a message
     :return: A list of the words in contents
     """
+    if not isinstance(contents, str):
+        raise TypeError("contents must be of type str")
+
     content = contents.lower()
     # Remove special characters
     for i in range(len(content)):
@@ -34,6 +37,9 @@ def timestamp_to_datetime(timestamp: int):
     :param timestamp: The timestamp given by Facebook
     :return: The datetime the timestamp corresponds to
     """
+    if not isinstance(timestamp, int) and not isinstance(timestamp, float):
+        raise TypeError("timestamp must be of type int or float")
+
     date_time = datetime.datetime.fromtimestamp(timestamp)
     return date_time
 
@@ -44,6 +50,9 @@ def separate_users(data: dict):
     :param data: The messages sent in the conversation
     :return: A dictoinary of the users and the messages they sent
     """
+    if not isinstance(data, dict):
+        raise TypeError("data bust be of type dict")
+
     users = {}
     for user in data['participants']:
         users[user['name']] = []

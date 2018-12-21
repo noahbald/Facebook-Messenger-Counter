@@ -1,7 +1,7 @@
 import counters
 
 
-def time_average(messages: dict, output: bool = False, precision: int = 16):
+def time_average(messages: list, output: bool = False, precision: int = 16):
     """
     Calculate the proportions of messages sent in each time frame
     :param messages: The messages in the conversation
@@ -9,6 +9,16 @@ def time_average(messages: dict, output: bool = False, precision: int = 16):
     :param precision: How many decimal places to consider each proportion
     :return: The proportions of messages sent in each time frame
     """
+    if not isinstance(messages, list):
+        raise TypeError("messages must be of type list")
+    if not isinstance(output, bool):
+        raise TypeError("output must be of type bool")
+    if not isinstance(precision, int):
+        raise TypeError("precision must be of type int")
+    for message in messages:
+        if 'timestamp' not in message and 'timestamp_ms' not in message:
+            raise ValueError("all messages in messages must have a timestamp")
+
     time_counts = counters.time_data(messages)
     time_proportions = {}
 
@@ -40,13 +50,21 @@ def time_average(messages: dict, output: bool = False, precision: int = 16):
     return time_proportions
 
 
-def call_time_average(messages: dict, output: bool = False):
+def call_time_average(messages: list, output: bool = False):
     """
     Calculate the average length of calls
     :param messages: The messages OF TYPE CALL in the conversation
     :param output: Whether to print the calculations to the console
     :return: The average length of calls
     """
+    if not isinstance(messages, list):
+        raise TypeError("messages must be of type list")
+    if not isinstance(output, bool):
+        raise TypeError("output must be of type bool")
+    for message in messages:
+        if message['type'] != "Call":
+            raise ValueError("all calls in messages must be Calls")
+
     call_data = counters.call_data(messages)
     average_time = round(call_data['duration_total'] / call_data['answered_count'])
 
@@ -63,6 +81,14 @@ def message_length_average(messages: list, output: bool = False):
     :param output: Whether to print the calculations to the console
     :return: The average length of messages
     """
+    if not isinstance(messages, list):
+        raise TypeError("messages must be of type list")
+    if not isinstance(output, bool):
+        raise TypeError("output must be of type bool")
+    for message in messages:
+        if 'content' not in message:
+            raise ValueError("all messages in messages must have content")
+
     message_data = counters.messages_data(messages)
     average_message_length = round(message_data['message_count'] / message_data['unique_word_count'])
 
@@ -72,7 +98,7 @@ def message_length_average(messages: list, output: bool = False):
     return average_message_length
 
 
-def reaction_average(messages: dict, output: bool = False, precision: int = 16):
+def reaction_average(messages: list, output: bool = False, precision: int = 16):
     """
     Calculate the proportions of reactions made in the conversation
     :param messages: The messages WHICH HAVE REACTIONS in the conversation
@@ -80,6 +106,16 @@ def reaction_average(messages: dict, output: bool = False, precision: int = 16):
     :param precision: How many decimal places to consider each proportion
     :return: The proportions of the reactions made
     """
+    if not isinstance(messages, list):
+        raise TypeError("messages must be of type list")
+    if not isinstance(output, bool):
+        raise TypeError("output must be of type bool")
+    if not isinstance(precision, int):
+        raise TypeError("output must be of type int")
+    for message in messages:
+        if 'reactions' not in message:
+            raise ValueError("all messages in messages must have a reaction")
+
     react_data = counters.react_data(messages)
     total_reacts = react_data['react_count']
     react_average = {}

@@ -8,6 +8,9 @@ def load_file(path: str):
     :param path: The system path to the message file
     :return: The data stored in the file
     """
+    if not isinstance(path, str):
+        raise TypeError("path must be of type str")
+
     file = open(path)
     data = json.load(file)
     file.close()

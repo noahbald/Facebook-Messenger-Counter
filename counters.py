@@ -8,6 +8,14 @@ def messages_data(messages: list, output: bool = False):
     :param output: Whether to print the calculations to the terminal
     :return: The amount of messages and words sent
     """
+    if not isinstance(messages, list):
+        raise TypeError("messages must be of type list")
+    if not isinstance(output, bool):
+        raise TypeError("output must be of type bool")
+    for message in messages:
+        if 'content' not in message:
+            raise ValueError('all messages must have content')
+
     word_count = 0
     unique_words = {}
     for message in messages:
@@ -30,13 +38,18 @@ def messages_data(messages: list, output: bool = False):
             'unique_word_list': unique_words}
 
 
-def media_data(media: dict, output: bool = False):
+def media_data(media: list, output: bool = False):
     """
     Count the amount of each type of media sent in the conversation
     :param media: The list of messages sent in the conversation
     :param output: Whether to print the calculations to the terminal
     :return:The amount of each type of media
     """
+    if not isinstance(media, list):
+        raise TypeError("media must be of type list")
+    if not isinstance(output, bool):
+        raise TypeError("output must be of type list")
+
     # A list of the types of media that can be attached to a message
     media_types = ["photos", "videos", "gifs", "files", "audio_files"]
 
@@ -78,13 +91,21 @@ def media_data(media: dict, output: bool = False):
             'file_count': files_count, 'audio_count': audio_count}
 
 
-def react_data(reactions: dict, output: bool = False):
+def react_data(reactions: list, output: bool = False):
     """
     Count the amount of reactions made in the conversation
     :param reactions: The list of messages sent in the conversation WITH REACTIONS
     :param output: Whether to print the calculations to the terminal
     :return: The amount of reactions made
     """
+    if not isinstance(reactions, list):
+        raise TypeError("reactions must be of type list")
+    if not isinstance(output, bool):
+        raise TypeError("output must be of type bool")
+    for message in reactions:
+        if 'reactions' not in message:
+            raise ValueError("all messages in reactions must have a reaction")
+
     # The unicode character for the reactions and their names
     react_keys = {"\u00f0\u009f\u0098\u008d": "love", "\u00f0\u009f\u0098\u0086": "laugh",
                   "\u00f0\u009f\u0098\u00ae": "wow", "\u00f0\u009f\u0098\u00a2": "sad",
@@ -143,13 +164,21 @@ def react_data(reactions: dict, output: bool = False):
             'dislike_count': dis_i_like_count}
 
 
-def call_data(messages: dict, output: bool = False):
+def call_data(messages: list, output: bool = False):
     """
     Calculate the amount of calls made in the conversation
     :param messages: The list of messages WHICH ARE OF TYPE "CALL"
     :param output: Whether to print the calculations to the terminal
     :return: The amount of calls made
     """
+    if not isinstance(messages, list):
+        raise TypeError("messages must be of type list")
+    if not isinstance(output, bool):
+        raise TypeError("output must be of type bool")
+    for message in messages:
+        if message['type'] != 'Call':
+            raise ValueError("all messages in messages must be a call")
+
     total_duration = 0
     total_calls = len(messages)
     missed_count = 0
@@ -172,13 +201,21 @@ def call_data(messages: dict, output: bool = False):
             'answered_count': answered_count}
 
 
-def time_data(messages: dict, output: bool = False):
+def time_data(messages: list, output: bool = False):
     """
     Count the amount of messages sent in each time-frame in the conversation
     :param messages: The messages sent in the conversation
     :param output: Whether to print the calculations to the terminal
     :return: The amount of messages sent in each time-frame (hours, days, months, and years)
     """
+    if not isinstance(messages, list):
+        raise TypeError('messages must be of type list')
+    if not isinstance(output, bool):
+        raise TypeError('output must be of type bool')
+    for message in messages:
+        if 'timestamp' not in message and 'timestamp_ms' not in message:
+            raise ValueError('all messages must have a timestamp')
+
     count_hour = [0] * 24  # 0:00 - 23:00
     count_day = [0] * 7  # mon - tue
     count_month = [0] * 12  # jan-dec

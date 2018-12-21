@@ -5,6 +5,7 @@ import operations
 import people
 
 import os
+import PyQt5
 
 # Constants
 DEFAULT_FILENAME = "message.json"

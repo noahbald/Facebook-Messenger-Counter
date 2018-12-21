@@ -15,6 +15,8 @@ def names(people: dict):
     :param people: The dictionary of the people in the conversation and their messages
     :return: The names of the people in the conversation
     """
+    if not isinstance(people, dict):
+        raise TypeError("people must be of type dict")
     return [x for x in people.keys()]
 
 
@@ -24,6 +26,11 @@ def people_message_count(people: dict):
     :param people: The dictionary of the people in the conversation and their messages
     :return: The amount of messages by each person
     """
+    if not isinstance(people, dict):
+        raise TypeError("people must be of type dict")
+    for data in people.values():
+        if not isinstance(data, list):
+            raise TypeError("The data for each person must be of type list")
     return {x: len(people[x]) for x in people.keys()}
 
 
@@ -33,6 +40,11 @@ def people_word_count(people: dict):
     :param people: The dictionary of the people in the conversation and their messages
     :return: The amount of words by each person
     """
+    if not isinstance(people, dict):
+        raise TypeError("people must be of type dict")
+    for data in people.values():
+        if not isinstance(data, list):
+            raise TypeError("The data for each person must be of type list")
     # Get the message data for each person
     y = {x: counters.messages_data(people[x]) for x in people.keys()}
     # Return omly the word count related data
@@ -47,6 +59,11 @@ def people_word_average(people: dict):
     :param people:The dictionary of the people in the conversation and their messages
     :return: The amount of words by each person
     """
+    if not isinstance(people, dict):
+        raise TypeError("people must be of type dict")
+    for data in people.values():
+        if not isinstance(data, list):
+            raise TypeError("The data for each person must be of type list")
     return {x: averages.message_length_average(people[x]) for x in people.keys()}
 
 
@@ -58,6 +75,19 @@ def people_react_count(people: dict, messages: list, output: bool = False):
     :param output: Whether to print the calculations to the terminal
     :return: The amount of reactions sent by each person
     """
+    if not isinstance(people, dict):
+        raise TypeError("people must be of type dict")
+    if not isinstance(messages, list):
+        raise TypeError("messages must be of type list")
+    if not isinstance(output, bool):
+        raise TypeError("output must be of type bool")
+    for message in messages:
+        if 'reactions' not in message:
+            raise ValueError("all messages in messages must have a reaction")
+    for data in people.values():
+        if not isinstance(data, list):
+            raise TypeError("The data for each person must be of type list")
+
     # Generate a list of actors
     actors = {x: {} for x in people.keys()}
     for message in messages:
@@ -95,6 +125,14 @@ def people_call_count(people: dict, output: bool = False):
     :param output: Whether to print the calculations to the terminal
     :return: The amount of calls made by each person
     """
+    if not isinstance(people, dict):
+        raise TypeError("people must be of type dict")
+    if not isinstance(output, bool):
+        raise ValueError("output must be of type bool")
+    for data in people.values():
+        if not isinstance(data, list):
+            raise TypeError("The data for each person must be of type list")
+
     people_calls = people.copy()
     for person in people_calls:
         for i in range(len(people_calls[person]), 0, -1):
@@ -124,6 +162,16 @@ def people_message_type_count(people: dict, messages_type: list, output: bool = 
     :param output: Whether to print the calculations to the terminal
     :return: The amount of messeges of that type by each person
     """
+    if not isinstance(people, dict):
+        raise TypeError("people must be of type dict")
+    if not isinstance(messages_type, list):
+        raise TypeError("messages_type must be of type list")
+    if not isinstance(output, bool):
+        raise TypeError("output must be of type bool")
+    for data in people.values():
+        if not isinstance(data, list):
+            raise TypeError("The data for each person must be of type list")
+
     # Create a dictionary to store each persons count
     senders = {x: 0 for x in people.keys()}
     for message in messages_type:
@@ -145,4 +193,9 @@ def people_media_count(people: dict):
     :param people: The dict of the people in the conversation and their messages
     :return: The amount of media sent by each person
     """
+    if not isinstance(people, dict):
+        raise TypeError("people must be of type dict")
+    for data in people.values():
+        if not isinstance(data, list):
+            raise TypeError("The data for each person must be of type list")
     return {x: counters.media_data(people[x]) for x in people.keys()}
