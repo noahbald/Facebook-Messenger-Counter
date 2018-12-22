@@ -3,6 +3,7 @@ import counters
 import averages
 import operations
 import people
+import application
 
 import os
 import PyQt5
@@ -21,7 +22,7 @@ message_types = {}
 people_data = {}
 
 
-def main(mode: str = "latest"):
+def main(mode: str = "application"):
     """
     Runs through the system's main procedures
     :param mode: the I/O mode for the application
@@ -61,6 +62,8 @@ def main(mode: str = "latest"):
         # Run the application through the terminal
         menu()
         return
+    elif mode == "application":
+        application.main(data, message_types, people_data)
 
 
 def message_distribution():
@@ -245,4 +248,4 @@ def menu():
 
 
 if __name__ == '__main__':
-    main(mode="legacy")
+    main(mode="application")
