@@ -64,19 +64,19 @@ def media_data(media: list, output: bool = False):
         # There can be multiple media in one message, so consider the len
         if media_types[0] in item:
             photo_count += len(item[media_types[0]])
-            total_count += 1
+            total_count += len(item[media_types[0]])
         elif media_types[1] in item:
             video_count += len(item[media_types[1]])
-            total_count += 1
+            total_count += len(item[media_types[1]])
         elif media_types[2] in item:
             gifs_count += len(item[media_types[2]])
-            total_count += 1
+            total_count += len(item[media_types[2]])
         elif media_types[3] in item:
             files_count += len(item[media_types[3]])
-            total_count += 1
+            total_count += len(item[media_types[3]])
         elif media_types[4] in item:
             audio_count += len(item[media_types[4]])
-            total_count += 1
+            total_count += len(item[media_types[4]])
 
     if output:
         # Output the data to the console

@@ -1,5 +1,6 @@
 import re
 import datetime
+from typing import Union
 
 
 def word_extract(contents: str):
@@ -28,10 +29,13 @@ def word_extract(contents: str):
     # Separate into words
     content = content.split(" ")
 
+    # remove empty strings
+    content = list(filter("".__ne__, content))
+
     return content
 
 
-def timestamp_to_datetime(timestamp: int):
+def timestamp_to_datetime(timestamp: Union[int, str]):
     """
     Convert a timestamp to datetime
     :param timestamp: The timestamp given by Facebook

@@ -79,7 +79,7 @@ def message_length_average(messages: list, output: bool = False):
     Calculate the average amount of words in messages
     :param messages: The messages in the conversation
     :param output: Whether to print the calculations to the console
-    :return: The average length of messages
+    :return: The average length of messages (rounded to the nearest whole)
     """
     if not isinstance(messages, list):
         raise TypeError("messages must be of type list")
@@ -90,7 +90,10 @@ def message_length_average(messages: list, output: bool = False):
             raise ValueError("all messages in messages must have content")
 
     message_data = counters.messages_data(messages)
-    average_message_length = round(message_data['message_count'] / message_data['unique_word_count'])
+    try:
+        average_message_length = round(message_data['message_count'] / message_data['unique_word_count'])
+    except ZeroDivisionError:
+        average_message_length = 0
 
     if output:
         print("Average message length:", average_message_length)

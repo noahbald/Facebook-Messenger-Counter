@@ -49,13 +49,14 @@ def people_word_count(people: dict):
     y = {x: counters.messages_data(people[x]) for x in people.keys()}
     # Return omly the word count related data
     return {x: {'word_count': y[x]['word_count'],
-                'unique_word_count': y[x]['unique_word_count']}
+                'unique_word_count': y[x]['unique_word_count'],
+                'unique_word_list': y[x]['unique_word_list']}
             for x in y}
 
 
 def people_word_average(people: dict):
     """
-    Return a dict of the average amount of words sent by each person
+    Return a dict of the average amount of words in each message sent by each person
     :param people:The dictionary of the people in the conversation and their messages
     :return: The amount of words by each person
     """
@@ -94,16 +95,21 @@ def people_react_count(people: dict, messages: list, output: bool = False):
         for reaction in message['reactions']:
             # Add react count if it doesn't exits, otherwise increment it
             if 'react_count' not in actors[reaction['actor']]:
-                actors[reaction['actor']]['react_count'] = 0
+                actors[reaction['actor']]['react_count'] = 1
             else:
                 actors[reaction['actor']]['react_count'] += 1
             for react in REACTS:
                 # Add react if it doesn't exist, otherwise increment it
                 if react == reaction['reaction']:
                     if REACTS[react] not in actors[reaction['actor']]:
-                        actors[reaction['actor']][REACTS[react]] = 0
+                        actors[reaction['actor']][REACTS[react]] = 1
                     else:
                         actors[reaction['actor']][REACTS[react]] += 1
+    # Include reactions for actors which were not found
+    for actor in actors:
+        for react in REACTS.values():
+            if react not in actors[actor]:
+                actors[actor][react] = 0
 
     if output:
         # Output data to the terminal
@@ -128,7 +134,7 @@ def people_call_count(people: dict, output: bool = False):
     if not isinstance(people, dict):
         raise TypeError("people must be of type dict")
     if not isinstance(output, bool):
-        raise ValueError("output must be of type bool")
+        raise TypeError("output must be of type bool")
     for data in people.values():
         if not isinstance(data, list):
             raise TypeError("The data for each person must be of type list")
